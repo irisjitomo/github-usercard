@@ -10,6 +10,17 @@
    Skip to Step 3.
 */
 
+const mainCard = document.querySelector('.cards');
+
+
+
+  axios.get('https://api.github.com/users/irisjitomo')
+  .then((res) => {
+    console.log(res.data);
+    mainCard.appendChild(cardCreator(res.data));
+  })
+
+
 /* Step 4: Pass the data received from Github into your function, 
            create a new component and add it to the DOM as a child of .cards
 */
@@ -24,7 +35,22 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+
+const followersArray = [
+  "jonyonson",
+  "allisonkydy",
+  "CameronAlvarado",
+  "jeffreywhitaker",
+  "NicholasInterest1",
+]
+
+followersArray.forEach(follower => {
+  axios.get(`https://api.github.com/users/${follower}`)
+  .then(res => {
+    mainCard.appendChild(cardCreator(res.data));
+    console.log(res.data);
+  })
+})
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -45,6 +71,95 @@ const followersArray = [];
 </div>
 
 */
+
+// window.addEventListener('load', cardCreator);
+
+
+function cardCreator(obj) {
+  const cardDiv = document.createElement('div');
+  cardDiv.classList.add('card');
+
+  const newImg = document.createElement('img');
+  newImg.src = obj.avatar_url;
+  
+  const cardInfoDiv = document.createElement('div');
+  cardInfoDiv.classList.add('card-info');
+  
+  const nameTitle = document.createElement('h3');
+  nameTitle.classList.add('name');
+  nameTitle.textContent = obj.name;
+  
+  const usernameP = document.createElement('p');
+  usernameP.classList.add('username');
+  usernameP.textContent = obj.login;
+  
+  const locationP = document.createElement('p');
+  locationP.textContent = `Location: ${obj.location || 'none'}`
+  
+  const profileP = document.createElement('p');
+  profileP.textContent = 'Profile: ';
+  
+  const profileLink = document.createElement('a');
+  profileLink.href = obj.html_url;
+  profileLink.textContent = obj.html_url;
+  
+  const followersP = document.createElement('p');
+  followersP.textContent = `Followers:  ${obj.followers}`;
+  
+  const followingP = document.createElement('p');
+  followingP.textContent = `Following:  ${obj.following}`;
+  
+  const bioP = document.createElement('p');
+  bioP.textContent = `Bio: ${obj.bio || 'none'}`;
+
+  // const span = document.createElement('span');
+  // span.classList.add('expandButton')
+  // // span.style.borderRadius = '20%';
+  // span.style.background = 'white';
+  // span.style.color = 'black';
+  // span.style.fontSize = '2rem';
+  // span.style.margin = '30%';
+  // span.textContent = 'More info';
+
+  // const buttonOpen = document.createElement('p')
+  // span.addEventListener('click', () =>{
+  //   cardDiv.classList.toggle('button-open')
+  // })
+
+  const span = document.createElement('button');
+  span.classList.add('expandButton')
+  span.style.background = 'white';
+  span.style.color = 'black';
+  span.style.fontSize = '2rem';
+  span.textContent = 'More info';
+
+  span.addEventListener('click', () =>{
+    cardDiv.classList.toggle('button-open')
+    cardDiv.style.background = '#BA1434';
+    cardDiv.style.color = "white";
+    profileLink.style.color = 'white';
+
+  })
+
+  // const buttonOpen = document.createElement('div');
+  // buttonOpen = document.className.add('button-open')
+
+
+	cardDiv.appendChild(newImg);
+	cardDiv.appendChild(cardInfoDiv);
+	cardInfoDiv.appendChild(nameTitle);
+	cardInfoDiv.appendChild(usernameP);
+	cardInfoDiv.appendChild(locationP);
+	cardInfoDiv.appendChild(profileP);
+	cardInfoDiv.appendChild(followersP);
+	cardInfoDiv.appendChild(followingP);
+  cardInfoDiv.appendChild(bioP);
+  cardInfoDiv.appendChild(span);
+  
+  profileP.append(profileLink);
+
+	return cardDiv;
+}
 
 /* List of LS Instructors Github username's: 
   tetondan
